@@ -12,7 +12,7 @@ import com.viana.socialbooks.domain.Livro;
  *
  * @Criado em 24 de nov de 2018
  */
-public interface LivrosRepository extends JpaRepository<Livro, Long>{
+public interface LivrosRepository extends JpaRepository<Livro, Integer>{
 	
 	
 	
