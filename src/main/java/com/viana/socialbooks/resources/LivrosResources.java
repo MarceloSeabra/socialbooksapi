@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.viana.socialbooks.domain.Livro;
-import com.viana.socialbooks.repoitory.LivrosRepository;
 import com.viana.socialbooks.services.LivrosService;
 import com.viana.socialbooks.services.exceptions.LivroNaoEncontradoException;
 
@@ -34,7 +32,7 @@ public class LivrosResources {
 
 	@Autowired
 	private LivrosService livrosService;
-	
+
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<Livro>> listar() {
 		return ResponseEntity.status(HttpStatus.OK).body(livrosService.listar());
@@ -52,15 +50,15 @@ public class LivrosResources {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Optional<Livro>> buscar(@PathVariable("id") int id) {
 		Optional<Livro> livro = null;
-		
+
 		try {
 			livro = livrosService.buscar(id);
-		}catch (LivroNaoEncontradoException e) {
+		} catch (LivroNaoEncontradoException e) {
 			return ResponseEntity.notFound().build();
 		}
-	
+
 		return ResponseEntity.status(HttpStatus.OK).body(livro);
-		
+
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -76,8 +74,12 @@ public class LivrosResources {
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Void> atualizar(@RequestBody Livro livro, @PathVariable("id") int id) {
 		livro.setId(id);
-		livrosRepository.save(livro);
-		
+		try {
+			livrosService.atualizar(livro);
+		} catch (LivroNaoEncontradoException e) {
+			return ResponseEntity.notFound().build();
+		}
+
 		return ResponseEntity.noContent().build();
 	}
 

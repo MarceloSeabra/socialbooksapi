@@ -54,8 +54,14 @@ public class LivrosService {
 		}
 	}
 	
-	public void atualizar(Integer id) {
-		
+	public void atualizar(Livro livro ) {
+		verificarExistencia(livro);
+		livrosRepository.save(livro);
 	}
+	
+	private void verificarExistencia(Livro livro) {
+		buscar(livro.getId());
+	}
+	
 
 }
